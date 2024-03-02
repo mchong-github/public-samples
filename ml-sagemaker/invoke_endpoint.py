@@ -3,7 +3,7 @@
 import boto3
 
 sagemaker_runtime = boto3.client("sagemaker-runtime")
-endpoint_name = 'sagemaker-xgboost-2021-12-26-00-37-00-294'
+endpoint_name = 'sagemaker-xgboost-test-endpoint'
 res = sagemaker_runtime.invoke_endpoint(
 	EndpointName=endpoint_name,
 	Body=bytes('{"features": ["This is great!"]}', 'utf-8')

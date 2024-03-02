@@ -16,7 +16,7 @@ except ClientError as e:
 		res = smc.create_training_job(
 			TrainingJobName=training_job_name,
 			AlgorithmSpecification={ 
-				'TrainingImage': '257758044811.dkr.ecr.us-east-2.amazonaws.com/sagemaker-xgboost:1.2-1',
+				'TrainingImage': '########.dkr.ecr.us-east-2.amazonaws.com/sagemaker-xgboost:1.2-1',
 				'TrainingInputMode': 'File'
 			},
 			HyperParameters={
@@ -28,7 +28,7 @@ except ClientError as e:
 				'objective': 'binary:logistic',
 				'num_round': '1000'
 			},
-			RoleArn='arn:aws:iam::903207315661:role/service-role/AmazonSageMakerServiceCatalogProductsUseRole',
+			RoleArn='arn:aws:iam::##############:role/service-role/AmazonSageMakerServiceCatalogProductsUseRole',
 			InputDataConfig=[
 				{
 					'ChannelName': 'train',
