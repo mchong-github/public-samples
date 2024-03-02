@@ -1,0 +1,77 @@
+- name: sg for web application
+  tags: [ sg ]
+  block:   
+    - ec2_group:
+        name: webserver_sg
+        description: sg for alb and webservers
+        vpc_id: '{{ vpc }}'
+        region: '{{ region }}'
+        rules:
+          - proto: tcp
+            ports: 443
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all incoming to port 443
+          - proto: tcp
+            ports: 22
+            cidr_ip: 10.1.0.0/24
+            rule_desc: allow ssh only from internal subnets
+        tags:
+          Name: webserver_sg
+      register: webserver_sg
+    - lineinfile:
+        path: '{{ vars_all }}'
+        regexp: '^webserver_sg_id'
+        line: 'webserver_sg_id: {{ webserver_sg.group_id }}'
+    
+    - ec2_group:
+        name: database_sg 
+        description: sg for rds and database
+        vpc_id : '{{ vpc }}'
+        region: '{{ region }}'
+        rules:
+          - proto: tcp
+            ports: 5432
+            cidr_ip: [ 10.1.0.0/24, 10.1.1.0/24, 10.1.2.0/24 ]
+            rule_desc: allow db access from internal subnets 
+        tags:
+          Name: database_sg 
+      register: database_sg
+    - lineinfile:
+        path: '{{ vars_all }}'
+        regexp: '^database_sg_id'
+        line: 'database_sg_id: {{ database_sg.group_id }}'
+
+    - ec2_group:
+        name: bastion_sg 
+        description: sg for bastion
+        vpc_id : '{{ vpc }}'
+        region: '{{ region }}'
+        rules:
+          - proto: tcp
+            ports: 22
+            cidr_ip: 108.44.242.72/32   # users ip
+            rule_desc: allow ssh only from users ip  
+        tags:
+          Name: bastion_sg 
+      register: bastion_sg
+    - lineinfile:
+        path: '{{ vars_all }}'
+        regexp: '^bastion_sg_id'
+        line: 'bastion_sg_id: {{ bastion_sg.group_id }}'
+        
+
+
+
+
+- name: destroy all
+  tags: [ never, destroy_all_web_application, destroy_all_sg ]
+  block:   
+    - ec2_group:
+        vpc_id: '{{ vpc }}'
+        region: '{{ region }}'
+        state: absent
+        group_id: '{{ item }}'
+      with_items:
+        - '{{ webserver_sg_id }}'
+        - '{{ database_sg_id }}'
+        - '{{ bastion_sg_id }}'

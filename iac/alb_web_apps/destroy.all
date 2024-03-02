@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  gather_facts: no
+  collections: 
+    - amazon.aws
+  roles:
+    - ec2
+    - sg
+    - vpc

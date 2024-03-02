@@ -1,0 +1,25 @@
+- name: launch ec2
+  ec2_instance:
+    name: "bastion"
+    region: '{{ region }}'
+    key_name: '{{ keypair }}'
+    instance_type: t2.micro
+    image_id: '{{ ubuntu }}'
+    security_group: '{{ bastion_sg_id }}'
+    vpc_subnet_id: '{{ webapp_public_subnet_id }}'
+    
+
+#  ec2:
+#    region: '{{ region }}'
+#    key_name: '{{ keypair }}'
+#    instance_type: t2.micro
+#    image: '{{ ubuntu }}'
+#    group: bastion_sg
+#    vpc_subnet_id: '{{ webapp_public_subnet_id }}'
+#    assign_public_ip: no
+
+
+
+
+
+

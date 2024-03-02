@@ -1,0 +1,66 @@
+---
+- name: sg
+  ec2_group:
+    name: web-application-webserver-sg
+    description: sg for alb and webservers
+    vpc_id: '{{ vpc }}'
+    region: '{{ region }}'
+    rules:
+      - proto: tcp
+        ports: 443
+        cidr_ip: 0.0.0.0/0
+        rule_desc: allow all incoming to port 443
+      - proto: tcp
+        ports: 22
+        cidr_ip: 10.1.0.0/24
+        rule_desc: allow ssh only from internal subnets
+#- name: sg for web application
+#  tags: [ sg ]
+#  block:   
+#    - ec2_group:
+#        name: web-application-webserver-sg
+#        description: sg for alb and webservers
+#        vpc_id: '{{ vpc }}'
+#        region: '{{ region }}'
+#        rules:
+#          - proto: tcp
+#            ports: 443
+#            cidr_ip: 0.0.0.0/0
+#            rule_desc: allow all incoming to port 443
+#          - proto: tcp
+#            ports: 22
+#            cidr_ip: 10.1.0.0/24
+#            rule_desc: allow ssh only from internal subnets
+#      register: webserver_sg
+#    - debug: var=webserver_sg
+#    - ec2_group:
+#        name: web-application-database-sg 
+#        description: sg for rds and database
+#        vpc_id : '{{ vpc }}'
+#        region: '{{ region }}'
+#        rules:
+#          - proto: tcp
+#            ports: 5432
+#            cidr_ip: [ 10.1.0.0/24, 10.1.1.0/24, 10.1.2.0/24 ]
+#            rule_desc: allow db access from internal subnets 
+#      register: database_sg
+#    - debug: var=database_sg
+
+
+
+- name: destroy all
+  tags: [ never, destroy_all_web_application ]
+  block:   
+    - ec2_group:
+        name: web-application-webserver-sg
+        vpc_id: '{{ vpc }}'
+        region: '{{ region }}'
+        rules:
+          - proto: tcp
+            ports: 443
+            cidr_ip: 0.0.0.0/0
+            rule_desc: allow all incoming to port 443
+          - proto: tcp
+            ports: 22
+            cidr_ip: 10.1.0.0/24
+            rule_desc: allow ssh only from internal subnets

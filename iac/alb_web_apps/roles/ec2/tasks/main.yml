@@ -1,0 +1,6 @@
+- import_tasks: bastion.yml
+  tags: [ bastion ]
+- import_tasks: database.yml
+  tags: [ database ] 
+- import_tasks: webserver.yml
+  tags: [ webserver ] 
